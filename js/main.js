@@ -106,7 +106,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                         }                        
                     });
                     } else {
-                        if (0) {
+                        if (1) {
                             o.transcript.start5 = 0;
                             o.transcript.end5 = 0;
                             o.transcript.start3 = 0;
