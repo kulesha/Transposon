@@ -111,8 +111,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                             o.transcript.end5 = 0;
                             o.transcript.start3 = 0;
                             o.transcript.end3 = 0;
-                            o.transcript.Translation.start = 0;
-                            o.transcript.Translation.end = 0;
+                            o.transcript.Translation = {start: 0, end: 0};
+                            
                         }
 
                     }
