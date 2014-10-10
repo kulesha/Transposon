@@ -7,7 +7,7 @@ var myApp = angular.module('geneInfoApp', ['ngSanitize', 'ngCsv']);
 
 myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anchorScroll', '$window', function ($scope, $http, $sce, $location, $anchorScroll, $window) { 
      $scope.formInfo = {
-        gene: "ARSE\nBRCA2", 
+        gene: "", //"ARSE\nBRCA2", 
         width: 100, 
         coding: false, 
         restServer: 'http://grch37.rest.ensembl.org',
@@ -94,15 +94,39 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                         
                         var l = data.mappings.pop();
                         if (o.strand > 0) {
-                            o.transcript.start5 = t1.start;
-                            o.transcript.end5 = t1.Translation.start-1;
-                            o.transcript.start3 = t1.Translation.end +1;
-                            o.transcript.end3 = t1.end;
+                            if (t1.start == t1.Translation.start) {
+                                o.transcript.start5 = 0;
+                                o.transcript.end5 = 0;                                
+                            } else {
+                                o.transcript.start5 = t1.start;
+                                o.transcript.end5 = t1.Translation.start-1;
+                            }
+                            
+                            if (t1.end == t1.Translation.end) {
+                                o.transcript.start3 = 0;
+                                o.transcript.end3 = 0;                                
+                            } else {
+                                o.transcript.start3 = t1.Translation.end +1;
+                                o.transcript.end3 = t1.end;
+                            }
                         } else {
-                            o.transcript.start5 = f.end +1;
-                            o.transcript.end5 = t1.end;
-                            o.transcript.start3 = t1.start;
-                            o.transcript.end3 = t1.Translation.start-1;
+                            if (t1.end == t1.Translation.end) {
+                                o.transcript.start5 = 0;
+                                o.transcript.end5 = 0;
+                            
+                            } else {
+                                o.transcript.start5 = f.end +1;
+                                o.transcript.end5 = t1.end;
+                            
+                            }
+                            if (t1.start == t1.Translation.start) {
+                                o.transcript.start3 = 0;
+                                o.transcript.end3 = 0;
+                            } else {
+                                o.transcript.start3 = t1.start;
+                                o.transcript.end3 = t1.Translation.start-1;
+                            }
+                            
                         }                        
                     });
                     } else {
