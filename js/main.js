@@ -175,7 +175,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     };
     
     $scope.getHeader2 = function () {
-        return ['Sample','Region','PositiveBrk', 'PositiveLoc','PositiveExon','NegativeBrk', 'NegativeLoc', 'NegativeExon', 'Gene'];
+        return ['Sample','Region','PositiveBrk', 'PositiveLoc','PositiveExon','NegativeBrk', 'NegativeLoc', 'NegativeExon', 'PositiveSupport', 'NegativeSupport','Gene'];
     };
    
     $scope.getResults2 = function() {
@@ -190,7 +190,9 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                  startE: e.posS,
                  end: e.e,
                  endP: e.ecol,
-                 endE: e.posE, 
+                 endE: e.posE,
+                 supP: e.rpos,
+                 supN: e.rneg,
                   gene: e.g
                 };
             ar.push(r);
