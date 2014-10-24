@@ -118,7 +118,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
      $scope.formInfo = {
         gene: "", //"ARSE\nBRCA2", 
         //fname: "http://www.ebi.ac.uk/~ek/all_1043.csv",
-         fname: "data/test2.csv",
+         fname: "data/test.csv",
         width: 100, 
         coding: false, 
         restServer: 'http://grch37.rest.ensembl.org',
@@ -505,11 +505,12 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     };
     this.transposonSearch = function() {
         var fname = $scope.formInfo.fname;
-        console.log(fname);
+//        console.log(fname);
         self.reset();
         $http.get(fname).success(function(data){
             var entries = data.split(/\n/).filter(function(n) {return n != undefined });
-        console.log(entries);
+        //console.log(entries);
+            entries.shift();
             
             $scope.genes = {};
             $scope.transposons = entries.map(function(item) {
@@ -518,13 +519,13 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     var g = edata[6];
                     if (g && g.match(/[A-Z|a-z]/) && g !== "Gene") {
                         $scope.genes[ g ] = { };                        
-                    }
-                           return { id: edata[0], r: edata[1], s : edata[2], e: edata[3], g: edata[6] };
+                    }                    
+                    return { id: edata[0], r: edata[1], s : edata[2], e: edata[3], g: edata[6] };
                  
                 }
             });
         
-          console.log($scope.transposons);
+          //console.log($scope.transposons);
           //  console.log($scope.genes);
             
             $scope.toFind = Object.keys($scope.genes).sort();
