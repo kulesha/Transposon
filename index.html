@@ -74,7 +74,7 @@
                             <th>Start</th><th>End</th>                
             </tr>
 
-            <tr ng-repeat="t in transposons">
+            <tr ng-repeat="t in transposons track by $index">
                 <td>{{t.id}}</td>
                 <td>{{t.r}}</td>
                 <td>{{t.s}}</td>
