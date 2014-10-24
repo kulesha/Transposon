@@ -5,8 +5,6 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <script type="text/javascript" src="sizeof.js"></script>
-
 </head>
 <body ng-app="geneInfoApp">
     <div ng-controller="geneInfoCtrl as gi">
@@ -51,8 +49,10 @@
                 <td class="flank3" style="padding:10px"> 3' Flank </td>
             </tr>
         </table>
+        
         <table class="table table-condensed table-striped" style="margin-left:15px;margin-right:15px;">
             <tr>
+                <th rowspan="3"></th>
                 <th rowspan="3">Sample</th>
                 <th rowspan="3">Region</th>
                 <th colspan="4" rowspan="2">Breakpoint</th>
@@ -75,6 +75,7 @@
             </tr>
 
             <tr ng-repeat="t in transposons track by $index">
+                <td>{{$index}}</td>
                 <td>{{t.id}}</td>
                 <td>{{t.r}}</td>
                 <td>{{t.s}}</td>
@@ -99,68 +100,6 @@
             
             </tr>
         </table>
-    </div>
-    <div ng-model="results" ng-show="results.length" ng-cloak id="results">
-        <table class="table table-condensed table-striped" style="margin-left:15px;margin-right:15px;">
-            <tr><th></th><th colspan="5">Gene</th><th rowspan="2">e! Transcript</th><th colspan="2">Transcript</th><th colspan="2">5'UTR</th><th colspan="2">CDS</th><th colspan="2">3'UTR</th></tr>
-            <tr><td></td><th>Name</th>
-                <th>Region</th>
-                <th>Start</th><th>End</th><th>Strand</th>
-                <th>Start</th><th>End</th>
-                <th>Start</th><th>End</th>
-                <th>Start</th><th>End</th>
-                <th>Start</th><th>End</th>
-            </tr>
-
-            <tr ng-repeat="gene in results">
-                <td>{{$index+1}}</td>
-                <td><a href="{{gene.gene_url}}">{{gene.display_name}}</a></td>
-                <td>{{gene.seq_region_name}}</td>
-                <td>{{gene.start | number}}</td>
-                <td>{{gene.end | number}}</td>
-                <td>{{gene.strand}}</td>                
-                <td><a href="{{gene.transcript_url}}">{{gene.transcript.id}}</a></td>
-                <td>{{gene.transcript.start | number}}</td>
-                <td>{{gene.transcript.end | number}}</td>
-                <td>{{gene.transcript.start5  | number}}</td>
-                <td>{{gene.transcript.end5 | number}}</td>
-                <td>{{gene.transcript.Translation.start | number}}</td>
-                <td>{{gene.transcript.Translation.end | number}}</td>
-                <td>{{gene.transcript.start3 | number}}</td>
-                <td>{{gene.transcript.end3 | number}}</td>
-             
-             
-            </tr>
-        </table>
-    </div>    
-    <div ng-show="geneInfo.id" ng-cloak id="data">
-         <table class="table table-condensed table-striped" style="margin-left:15px;margin-right:15px;">
-            <tr><th colspan="5">Gene</th><th rowspan="2">e! Transcript</th><th colspan="2">Transcript</th><th colspan="2">5'UTR</th><th colspan="2">CDS</th><th colspan="2">3'UTR</th></tr>
-            <tr><th>Name</th>
-                <th>Region</th>
-                <th>Start</th><th>End</th><th>Strand</th>
-                <th>Start</th><th>End</th>
-                <th>Start</th><th>End</th>
-                <th>Start</th><th>End</th>
-                <th>Start</th><th>End</th>
-            </tr>
-            <tr>
-                <td><a href="{{geneInfo.gene_url}}">{{geneInfo.display_name}}</a></td>
-                <td>{{geneInfo.seq_region_name}}</td>
-                <td>{{geneInfo.start | number}}</td>
-                <td>{{geneInfo.end | number}}</td>
-                <td>{{geneInfo.strand}}</td>                
-                <td><a href="{{geneInfo.transcript_url}}">{{geneInfo.transcript.id}}</a></td>
-                <td>{{geneInfo.transcript.start | number}}</td>
-                <td>{{geneInfo.transcript.end | number}}</td>
-                <td>{{geneInfo.transcript.start5  | number}}</td>
-                <td>{{geneInfo.transcript.end5 | number}}</td>
-                <td>{{geneInfo.transcript.Translation.start | number}}</td>
-                <td>{{geneInfo.transcript.Translation.end | number}}</td>
-                <td>{{geneInfo.transcript.start3 | number}}</td>
-                <td>{{geneInfo.transcript.end3 | number}}</td>
-             </tr>                
-            </table>
     </div>
         
         
