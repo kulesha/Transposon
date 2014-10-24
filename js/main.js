@@ -118,7 +118,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
      $scope.formInfo = {
         gene: "", //"ARSE\nBRCA2", 
         //fname: "http://www.ebi.ac.uk/~ek/all_1043.csv",
-         fname: "data/all_1043.csv", //test.csv",
+         fname: "data/test.csv",
         width: 100, 
         coding: false, 
         restServer: 'http://grch37.rest.ensembl.org',
