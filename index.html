@@ -5,29 +5,100 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script type="text/javascript" src="sizeof.js"></script>
 
 </head>
 <body ng-app="geneInfoApp">
     <div ng-controller="geneInfoCtrl as gi">
     <div class="row" style="padding-left:20px;padding-right:20px">
         <form>
-            <div class="col-xs-3">
+            <!--div class="col-xs-3">
                 <div class="input-group">
                     <textarea id="geneName" rows="5" name="geneName" class="form-control" placeholder="Enter gene name" ng-model="formInfo.gene"/>   </textarea> 
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-success" ng-click="gi.find()">Find</button>
                     </span>
                 </div>
-            </div>                                            
+            </div-->                                            
+         
+            <div class="col-xs-3">
+                <div class="input-group">
+                    <input type="text" id="fName" name="fName" class="form-control" placeholder="Enter Transposon file" ng-model="formInfo.fname"/>    
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-success" ng-click="gi.transposonSearch()">Parse</button>
+                    </span>
+                </div>
+            </div>   
+        
         </form>
+        
         <div ng-show="message" style="text-align:center" ng-cloak>        
             <span ng-model="message" style="background-color:pink;margin-top:10px;">{{ message }}</span>
             
              <button ng-show="finished" class="btn btn-default"
-              ng-csv="getResults" filename="table.csv" csv-header="getHeader()" field-separator=","
+              ng-csv="getResults2" filename="table.csv" csv-header="getHeader2()" field-separator=","
               >Export to CSV</button>
         </div>           
 
+    </div>
+    <div ng-model="transposons" ng-show="transposons.length" ng-cloak id="transposons">
+        <table class="width:50%" style="margin-left:20px">
+            <tr>
+                <td class="flank5" style="padding:10px"> 5' Flank </td>
+                <td class="utr5" style="padding:10px"> 5' UTR </td>
+                <td class="cds" style="padding:10px"> CDS </td>
+                <td class="utr3" style="padding:10px"> 3' UTR </td>
+                <td class="flank3" style="padding:10px"> 3' Flank </td>
+            </tr>
+        </table>
+        <table class="table table-condensed table-striped" style="margin-left:15px;margin-right:15px;">
+            <tr>
+                <th rowspan="3">Sample</th>
+                <th rowspan="3">Region</th>
+                <th colspan="4" rowspan="2">Breakpoint</th>
+                <th rowspan="3"> Gene </th>
+                <th colspan="10">e! Transcript</th>
+            </tr>
+            <tr>
+                <th rowspan="2">ID</th>
+                <th rowspan="2">Region</th>
+                <th colspan="2">5'UTR</th>
+                <th colspan="2">CDS</th>
+                <th colspan="2">3'UTR</th></tr>
+            </tr>
+            <tr>
+                <th colspan="2">+</th>
+                <th colspan="2">-</th>                
+                            <th>Start</th><th>End</th>
+                            <th>Start</th><th>End</th>
+                            <th>Start</th><th>End</th>                
+            </tr>
+
+            <tr ng-repeat="t in transposons">
+                <td>{{t.id}}</td>
+                <td>{{t.r}}</td>
+                <td>{{t.s}}</td>
+                <td>
+                    <table><tr><td class="{{t.scol}}"> {{t.spos}} </td><td>&nbsp;</td><td> {{t.posS}} </td></tr></table>
+                </td>                
+                
+                <td>{{t.e}}</td>
+                <td>
+                <table><tr><td class="{{t.ecol}}"> {{t.epos}} </td><td>&nbsp;</td><td> {{t.posE}} </td></tr></table>
+                </td>
+                <td>{{t.g}}</td>
+                <td>{{t.tid}}</td>
+                <td>{{t.gr}}</td>
+                <td>{{t.utr5s}}</td>
+                <td>{{t.utr5e}}</td>
+                <td>{{t.cdss}}</td>
+                <td>{{t.cdse}}</td>
+                <td>{{t.utr3s}}</td>
+                <td>{{t.utr3e}}</td>
+
+            
+            </tr>
+        </table>
     </div>
     <div ng-model="results" ng-show="results.length" ng-cloak id="results">
         <table class="table table-condensed table-striped" style="margin-left:15px;margin-right:15px;">

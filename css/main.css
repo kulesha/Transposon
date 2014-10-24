@@ -4,3 +4,32 @@ th {
 td { 
     text-align: right;
 }
+
+.flank5 {
+    background-color: #fffacd;
+}
+
+.utr5 {
+    background-color: #e8ffcc;
+}
+
+.gap5 {
+    background-color: #c1cdc1;
+}
+
+.cds {
+    background-color: #cd5c5c;
+}
+
+.gap3 {
+    background-color: #c1cdc1;
+}
+
+.utr3 {
+    background-color: #e8ffcc;
+}
+
+.flank3 {
+    background-color: #fffacd;
+    background-color2:yellow;
+}
