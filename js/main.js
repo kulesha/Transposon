@@ -493,6 +493,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     this.reset = function() {
         $scope.transposons = [];
         $scope.results = [];
+        $scope.formInfo.showTranscript = true;
     };
     
     this.getGeneData = function(gene) {
@@ -520,7 +521,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     if (g && g.match(/[A-Z|a-z]/) && g !== "Gene") {
                         $scope.genes[ g ] = { };                        
                     }                    
-                    return { id: edata[0], r: edata[1], s : edata[2], e: edata[3], g: edata[6] };
+                    return { id: edata[0], r: edata[1], s : edata[2], e: edata[3], rpos:edata[4], rneg:edata[5], g: edata[6] };
                  
                 }
             });
