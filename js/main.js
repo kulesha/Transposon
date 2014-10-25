@@ -145,6 +145,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     $scope.valid = 0;
     $scope.total = 0;
     
+    $scope.sortColumn = 'id';
+    
      $scope.getArray = [{a: 1, b:2}, {a:3, b:4}];
    $scope.getResults = function() {
     var ar = new Array();
@@ -492,10 +494,25 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         }
     };
 
+    $scope.selectedCls = function(column) {
+        return column == $scope.sortColumn && 'sort-' + $scope.sortDescending;
+    };
+    
+    $scope.changeSorting = function(column) {
+        if ($scope.sortColumn == column) {
+            $scope.sortDescending = !$scope.sortDescending;
+        } else {
+            $scope.sortColumn = column;
+            $scope.sortDescending = false;
+        }
+    };
+    
     this.reset = function() {
         $scope.transposons = [];
         $scope.results = [];
         $scope.formInfo.showTranscript = true;
+        $scope.sortColumn = 'id';
+        $scope.sortDescending = false;
     };
     
     this.getGeneData = function(gene) {
@@ -510,6 +527,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         var fname = $scope.formInfo.fname;
 //        console.log(fname);
         self.reset();
+        $scope.sorting = { column : 'g' , asc: true };
+
         $http.get(fname).success(function(data){
             var entries = data.split(/\n/).filter(function(n) {return n != undefined });
         //console.log(entries);
@@ -523,7 +542,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     if (g && g.match(/[A-Z|a-z]/) && g !== "Gene") {
                         $scope.genes[ g ] = { };                        
                     }                    
-                    return { id: edata[0], r: edata[1], s : edata[2], e: edata[3], rpos:edata[4], rneg:edata[5], g: edata[6] };
+                    return { id: edata[0], r: edata[1], s : parseInt(edata[2]), e: parseInt(edata[3]), rpos:parseInt(edata[4]), rneg:parseInt(edata[5]), g: edata[6] };
                  
                 }
             });
