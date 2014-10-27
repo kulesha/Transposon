@@ -64,8 +64,8 @@
             <tr>
                 <th rowspan="2">&nbsp;</th>                
                 <th>&nbsp;</th>
-                <th colspan="2">+</th>
-                <th colspan="2">-</th>         
+                <th colspan="2">Positive</th>
+                <th colspan="2">Negative</th>         
                 <th colspan="2">Support</th>
                 <th> &nbsp; </th>
                 <th rowspan="2">&nbsp;</th>
@@ -110,7 +110,7 @@
                 <td>{{t.g}}</td>
                 
                 <td ng-show="formInfo.showTranscript">{{t.tid}}</td>
-                <td class="{{t.o == t.ori ? 'ok' : 'diff'}}" ng-show="formInfo.showTranscript && t.ori">{{t.ori > 0 ? '+' : '-'}}</td>
+                <td class="{{t.o == t.ori ? 'ok' : 'diff'}}" ng-show="formInfo.showTranscript">{{t.ori ? (t.ori > 0 ? '+' : '-') : ''}}</td>
                 <td class="{{t.gr == t.r ? 'ok' : 'fail'}}" ng-show="formInfo.showTranscript">{{t.gr}}</td>
                 <td ng-show="formInfo.showTranscript">{{t.utr5s | number}}</td>
                 <td ng-show="formInfo.showTranscript">{{t.utr5e | number}}</td>
