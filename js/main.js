@@ -110,7 +110,6 @@ function getClass( pos, t) {
     }
 }
 
-
 // Define the app, ngSanitize is needed to enable passing plain html into ng-repeat
 var myApp = angular.module('geneInfoApp', ['ngSanitize', 'ngCsv']);
 
@@ -146,6 +145,18 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     $scope.total = 0;
     
     $scope.sortColumn = 'id';
+    $scope.sortDescending = false;
+    
+    $scope.cmpTransposons = function (a, b) {
+        if (a[$scope.sortColumn] < b[$scope.sortColumn]) {
+            return $scope.sortDescending ? 1 : -1;
+        } 
+        if (a[$scope.sortColumn] > b[$scope.sortColumn]) {
+            return $scope.sortDescending ? -1 : 1;
+        }
+        return 0;                
+    };
+
     
      $scope.getArray = [{a: 1, b:2}, {a:3, b:4}];
    $scope.getResults = function() {
@@ -181,25 +192,28 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     };
    
     $scope.getResults2 = function() {
-    var ar = new Array();
-    for (var i in $scope.transposons) {
-        var e = $scope.transposons[i];
-        if (e) {
-            var r = {sample: e.id,
+        var ar = new Array();
+        var tsp = $scope.transposons.sort($scope.cmpTransposons);
+        console.log(tsp);
+        
+        for (var i in tsp) {
+            var e = tsp[i];
+            if (e) {
+                var r = {sample: e.id,
                     chr: e.r,
-                 start: e.s,
-                 startP: e.scol,
-                 startE: e.posS,
-                 end: e.e,
-                 endP: e.ecol,
-                 endE: e.posE,
-                 supP: e.rpos,
-                 supN: e.rneg,
-                  gene: e.g
+                    start: e.s,
+                    startP: e.scol,
+                    startE: e.posS,
+                    end: e.e,
+                    endP: e.ecol,
+                    endE: e.posE,
+                    supP: e.rpos,
+                    supN: e.rneg,
+                    gene: e.g
                 };
-            ar.push(r);
+                ar.push(r);
             }
-    }
+        }
         
        return ar;
    };
