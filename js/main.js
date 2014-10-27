@@ -209,7 +209,9 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     endE: e.posE,
                     supP: e.rpos,
                     supN: e.rneg,
-                    gene: e.g
+                    ori: e.o > 0 ? '+' : '-',
+                    gene: e.g,
+                    gori: e.ori > 0 ? '+' : '-'
                 };
                 ar.push(r);
             }
@@ -556,7 +558,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     if (g && g.match(/[A-Z|a-z]/) && g !== "Gene") {
                         $scope.genes[ g ] = { };                        
                     }                    
-                    return { id: edata[0], r: edata[1], s : parseInt(edata[2]), e: parseInt(edata[3]), rpos:parseInt(edata[4]), rneg:parseInt(edata[5]), g: edata[6] };
+                    return { id: edata[0], r: edata[1], s : parseInt(edata[2]), e: parseInt(edata[3]), rpos:parseInt(edata[4]), rneg:parseInt(edata[5]), g: edata[6], o: edata[7] == '-' ? -1 : 1};
                  
                 }
             });

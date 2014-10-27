@@ -34,6 +34,12 @@ td {
     background-color2:yellow;
 }
 
+.diff {
+    color: red;
+    font-weight: bold;
+    font-size:1em;
+}
+
 .fail {
     color: red;
     font-weight: bold;
