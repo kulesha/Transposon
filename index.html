@@ -59,7 +59,7 @@
                 
                 <th colspan="8">Breakpoint</th>                
                 <th class="sortable" ng-class="selectedCls('g')" ng-click="changeSorting('g')"> Gene </th>
-                <th colspan="8" ng-show="formInfo.showTranscript">e! Transcript</th>
+                <th colspan="9" ng-show="formInfo.showTranscript">e! Transcript</th>
             </tr>
             <tr>
                 <th rowspan="2">&nbsp;</th>                
@@ -86,7 +86,7 @@
                 <th class="sortable" ng-class="selectedCls('rpos')" ng-click="changeSorting('rpos')"> Start </th>
                 <th class="sortable" ng-class="selectedCls('rneg')" ng-click="changeSorting('rneg')"> End </th>
                 <th> Ori </th>            
-                <th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th>
+                <th ng-show="formInfo.showTranscript">&nbsp;</th><th ng-show="formInfo.showTranscript">&nbsp;</th><th ng-show="formInfo.showTranscript">&nbsp;</th>
                             <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
                             <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
                             <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
@@ -95,12 +95,12 @@
             <tr ng-repeat="t in transposons | orderBy:sortColumn:sortDescending">
                 <td>{{t.id}}</td>
                 <td>{{t.r}}</td>
-                <td>{{t.s}}</td>
+                <td>{{t.s | number}}</td>
                 <td>
                     <table><tr><td class="{{t.scol}}"> {{t.spos}} </td><td>&nbsp;</td><td> {{t.posS}} </td></tr></table>
                 </td>                
                 
-                <td>{{t.e}}</td>
+                <td>{{t.e | number}}</td>
                 <td>
                 <table><tr><td class="{{t.ecol}}"> {{t.epos}} </td><td>&nbsp;</td><td> {{t.posE}} </td></tr></table>
                 </td>
@@ -112,12 +112,12 @@
                 <td ng-show="formInfo.showTranscript">{{t.tid}}</td>
                 <td class="{{t.o == t.ori ? 'ok' : 'diff'}}" ng-show="formInfo.showTranscript && t.ori">{{t.ori > 0 ? '+' : '-'}}</td>
                 <td class="{{t.gr == t.r ? 'ok' : 'fail'}}" ng-show="formInfo.showTranscript">{{t.gr}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr5s}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr5e}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.cdss}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.cdse}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr3s}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr3e}}</td>
+                <td ng-show="formInfo.showTranscript">{{t.utr5s | number}}</td>
+                <td ng-show="formInfo.showTranscript">{{t.utr5e | number}}</td>
+                <td ng-show="formInfo.showTranscript">{{t.cdss | number}}</td>
+                <td ng-show="formInfo.showTranscript">{{t.cdse | number}}</td>
+                <td ng-show="formInfo.showTranscript">{{t.utr3s | number}}</td>
+                <td ng-show="formInfo.showTranscript">{{t.utr3e | number}}</td>
 
             
             </tr>
