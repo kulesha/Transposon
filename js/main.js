@@ -7,7 +7,7 @@ var labels = {
     'utr5' : "5' UTR",
     'gap5' : "5' Gap",
     'cds' : "CDS",
-    'ncds' : "NCDS",
+    'nct' : "NCT",
     'gap3' : "3' Gap",
     'utr3' : "3' UTR",
     'flank3' : "3' Flank"
@@ -74,7 +74,7 @@ function getClass( pos, t) {
                             return "utr3";
                         } else {
                             if (pos < t.ge) { // for non coding transcripts
-                                return 'ncds';
+                                return 'nct';
                             } else {
                                 return "flank3";
                             }
@@ -106,7 +106,7 @@ function getClass( pos, t) {
                             return "utr5";
                         } else {
                             if (pos < t.ge) { // for non coding transcripts
-                                return 'ncds';
+                                return 'nct';
                             } else {
                                 return "flank5";
                             }
@@ -127,7 +127,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
      $scope.formInfo = {
         gene: "", //"ARSE\nBRCA2", 
         //fname: "http://www.ebi.ac.uk/~ek/all_1043.csv",
-         fname: "data/test.csv",
+         fname: "data/test2.csv",
         width: 100, 
         coding: false, 
         restServer: 'http://grch37.rest.ensembl.org',
