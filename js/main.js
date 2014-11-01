@@ -7,6 +7,7 @@ var labels = {
     'utr5' : "5' UTR",
     'gap5' : "5' Gap",
     'cds' : "CDS",
+    'ncds' : "NCDS",
     'gap3' : "3' Gap",
     'utr3' : "3' UTR",
     'flank3' : "3' Flank"
@@ -53,6 +54,7 @@ function getPosition( pos, t) {
 
 function getClass( pos, t) {
     if (t.ori > 0) {
+        
     if (pos < t.gs) {
         return "flank5";
     } else {
@@ -71,7 +73,11 @@ function getClass( pos, t) {
                         if (pos <= t.utr3e) {
                             return "utr3";
                         } else {
-                            return "flank3";
+                            if (pos < t.ge) { // for non coding transcripts
+                                return 'ncds';
+                            } else {
+                                return "flank3";
+                            }
                         }
                     }
                 }
@@ -99,7 +105,11 @@ function getClass( pos, t) {
                         if (pos <= t.utr5e) {
                             return "utr5";
                         } else {
-                            return "flank5";
+                            if (pos < t.ge) { // for non coding transcripts
+                                return 'ncds';
+                            } else {
+                                return "flank5";
+                            }
                         }
                     }
                 }
@@ -392,6 +402,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                             o.transcript.start3 = 0;
                             o.transcript.end3 = 0;
                             o.transcript.Translation = {start: 0, end: 0};
+                            o.transcript.startCds = 0;
+                            o.transcript.endCds = 0;
                             
                         }
 
@@ -399,6 +411,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     break;
                 }
             }
+            
             $scope.gHash[ o.display_name ] = o;
             $scope.valid++;
         }).error(function(data, status, header, config){
@@ -478,7 +491,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                         
                         t.posS = getExon(t.s, tl);
                         t.posE = getExon(t.e, tl);
-                        
+                        t.turl = g.transcript_url;
                         $scope.transposons[i] = t;                        
                     }
               //      console.log(t);

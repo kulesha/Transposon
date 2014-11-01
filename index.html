@@ -40,12 +40,17 @@
     
     </div>
     <div class="row" style="padding-left:20px; padding-right:20px; margin-right:20px;" ng-model="transposons" ng-show="transposons.length" ng-cloak id="transposons">
-        <table class="width:50%" style="margin-left:15px;">
-            <tr>
+        <table ng-show="finished" class="width:50%" style="margin-left:15px;">
+            <tr><th>Coding transcripts</th>
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="utr5" style="padding:10px"> 5' UTR </td>
-                <td class="cds" style="padding:10px"> CDS </td>
+                <td class="cds" style="padding:10px"> Coding sequence </td>
                 <td class="utr3" style="padding:10px"> 3' UTR </td>
+                <td class="flank3" style="padding:10px"> 3' Flank </td>
+            </tr>
+            <tr><th>Non-coding transcripts</th>
+                <td class="flank5" style="padding:10px"> 5' Flank </td>
+                <td class="ncds" style="padding:10px;text-align:center;" colspan="3"> Non-coding sequence</td>
                 <td class="flank3" style="padding:10px"> 3' Flank </td>
             </tr>
         </table>
@@ -59,7 +64,7 @@
                 
                 <th colspan="8">Breakpoint</th>                
                 <th colspan="2"> Gene </th>
-                <th colspan="8" ng-show="formInfo.showTranscript">e! Transcript</th>
+                <th colspan="8" ng-show="finished && formInfo.showTranscript">e! Transcript</th>
             </tr>
             <tr>
                 <th>&nbsp;</th>                
@@ -70,11 +75,11 @@
                 <th>&nbsp;</th>                
                 
                 <th colspan="2">&nbsp;</th>                
-                <th ng-show="formInfo.showTranscript">ID</th>
-                <th ng-show="formInfo.showTranscript">Region</th>
-                <th colspan="2" ng-show="formInfo.showTranscript">5'UTR</th>
-                <th colspan="2" ng-show="formInfo.showTranscript">CDS</th>
-                <th colspan="2" ng-show="formInfo.showTranscript">3'UTR</th></tr>
+                <th ng-show="finished && formInfo.showTranscript">ID</th>
+                <th ng-show="finished && formInfo.showTranscript">Region</th>
+                <th colspan="2" ng-show="finished && formInfo.showTranscript">5'UTR</th>
+                <th colspan="2" ng-show="finished && formInfo.showTranscript">CDS</th>
+                <th colspan="2" ng-show="finished && formInfo.showTranscript">3'UTR</th></tr>
             </tr>
             <tr>
                 <th class="sortable" ng-class="selectedCls('id')" ng-click="changeSorting('id')">ID</th>
@@ -89,13 +94,13 @@
                 <th>Ori</th>            
                 <th class="sortable" ng-class="selectedCls('g')" ng-click="changeSorting('g')">Name</th>
                 <th>Ori</th>
-                <th ng-show="formInfo.showTranscript">&nbsp;</th>
+                <th ng-show="finished && formInfo.showTranscript">&nbsp;</th>
                 
-                <th ng-show="formInfo.showTranscript">&nbsp;</th>
-                <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
-                            <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
-                            <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
-                        </tr>
+                <th ng-show="finished && formInfo.showTranscript">&nbsp;</th>
+                <th ng-show="finished && formInfo.showTranscript">Start</th><th ng-show="finished && formInfo.showTranscript">End</th>
+                <th ng-show="finished && formInfo.showTranscript">Start</th><th ng-show="finished && formInfo.showTranscript">End</th>
+                <th ng-show="finished && formInfo.showTranscript">Start</th><th ng-show="finished && formInfo.showTranscript">End</th>
+            </tr>
 
             <tr ng-repeat="t in transposons | orderBy:sortColumn:sortDescending">
                 <td>{{t.id}}</td>
@@ -114,14 +119,14 @@
                 <td>{{t.o > 0 ? '+' : '-'}}</td>
                 <td>{{t.g}}</td>
                 <td class="{{t.o == t.ori ? 'ok' : 'diff'}}">{{t.ori ? (t.ori > 0 ? '+' : '-') : ''}}</td>    
-                <td ng-show="formInfo.showTranscript">{{t.tid}}</td>
-                <td class="{{t.gr == t.r ? 'ok' : 'fail'}}" ng-show="formInfo.showTranscript">{{t.gr}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr5s | number}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr5e | number}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.cdss | number}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.cdse | number}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr3s | number}}</td>
-                <td ng-show="formInfo.showTranscript">{{t.utr3e | number}}</td>
+                <td ng-show="finished && formInfo.showTranscript"><a href="{{t.turl}}" target="_blank">{{t.tid}}</a></td>
+                <td class="{{t.gr == t.r ? 'ok' : 'fail'}}" ng-show="finished && formInfo.showTranscript">{{t.gr}}</td>
+                <td ng-show="finished && formInfo.showTranscript">{{t.utr5s | number}}</td>
+                <td ng-show="finished && formInfo.showTranscript">{{t.utr5e | number}}</td>
+                <td ng-show="finished && formInfo.showTranscript">{{t.cdss | number}}</td>
+                <td ng-show="finished && formInfo.showTranscript">{{t.cdse | number}}</td>
+                <td ng-show="finished && formInfo.showTranscript">{{t.utr3s | number}}</td>
+                <td ng-show="finished && formInfo.showTranscript">{{t.utr3e | number}}</td>
 
             
             </tr>
