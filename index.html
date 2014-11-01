@@ -4,7 +4,7 @@
         <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css?v=11">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=12">
 </head>
 <body ng-app="geneInfoApp">
     <div ng-controller="geneInfoCtrl as gi">
@@ -53,31 +53,32 @@
             <em>Show transcript data:</em> <input type="checkbox" ng-model="formInfo.showTranscript" name="showtranscript"/>
         </span>
     
-        <table class="table table-condensed table-striped" style="margin-left:15px;margin-right:25px;padding-right:10px;">
+        <table class="table table-condensed table-striped table-bordered" style="margin-left:15px;margin-right:25px;padding-right:10px;">
             <tr>
-                <th class="sortable" ng-class="selectedCls('id')" ng-click="changeSorting('id')">Sample</th>
+                <th>Sample</th>
                 
                 <th colspan="8">Breakpoint</th>                
-                <th class="sortable" ng-class="selectedCls('g')" ng-click="changeSorting('g')"> Gene </th>
-                <th colspan="9" ng-show="formInfo.showTranscript">e! Transcript</th>
+                <th colspan="2"> Gene </th>
+                <th colspan="8" ng-show="formInfo.showTranscript">e! Transcript</th>
             </tr>
             <tr>
-                <th rowspan="2">&nbsp;</th>                
+                <th>&nbsp;</th>                
                 <th>&nbsp;</th>
                 <th colspan="2">Positive</th>
                 <th colspan="2">Negative</th>         
                 <th colspan="2">Support</th>
-                <th> &nbsp; </th>
-                <th rowspan="2">&nbsp;</th>
+                <th>&nbsp;</th>                
                 
+                <th colspan="2">&nbsp;</th>                
                 <th ng-show="formInfo.showTranscript">ID</th>
-                <th ng-show="formInfo.showTranscript">Ori</th>
                 <th ng-show="formInfo.showTranscript">Region</th>
                 <th colspan="2" ng-show="formInfo.showTranscript">5'UTR</th>
                 <th colspan="2" ng-show="formInfo.showTranscript">CDS</th>
                 <th colspan="2" ng-show="formInfo.showTranscript">3'UTR</th></tr>
             </tr>
             <tr>
+                <th class="sortable" ng-class="selectedCls('id')" ng-click="changeSorting('id')">ID</th>
+                
                 <th class="sortable"  ng-class="selectedCls('r')" ng-click="changeSorting('r')">Region</th>
                 <th>Location</th>
                 <th>Position</th>                
@@ -85,9 +86,13 @@
                 <th>Position</th>
                 <th class="sortable" ng-class="selectedCls('rpos')" ng-click="changeSorting('rpos')"> Start </th>
                 <th class="sortable" ng-class="selectedCls('rneg')" ng-click="changeSorting('rneg')"> End </th>
-                <th> Ori </th>            
-                <th ng-show="formInfo.showTranscript">&nbsp;</th><th ng-show="formInfo.showTranscript">&nbsp;</th><th ng-show="formInfo.showTranscript">&nbsp;</th>
-                            <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
+                <th>Ori</th>            
+                <th class="sortable" ng-class="selectedCls('g')" ng-click="changeSorting('g')">Name</th>
+                <th>Ori</th>
+                <th ng-show="formInfo.showTranscript">&nbsp;</th>
+                
+                <th ng-show="formInfo.showTranscript">&nbsp;</th>
+                <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
                             <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
                             <th ng-show="formInfo.showTranscript">Start</th><th ng-show="formInfo.showTranscript">End</th>
                         </tr>
@@ -108,9 +113,8 @@
                 <td>{{t.rneg}}</td>                
                 <td>{{t.o > 0 ? '+' : '-'}}</td>
                 <td>{{t.g}}</td>
-                
+                <td class="{{t.o == t.ori ? 'ok' : 'diff'}}">{{t.ori ? (t.ori > 0 ? '+' : '-') : ''}}</td>    
                 <td ng-show="formInfo.showTranscript">{{t.tid}}</td>
-                <td class="{{t.o == t.ori ? 'ok' : 'diff'}}" ng-show="formInfo.showTranscript">{{t.ori ? (t.ori > 0 ? '+' : '-') : ''}}</td>
                 <td class="{{t.gr == t.r ? 'ok' : 'fail'}}" ng-show="formInfo.showTranscript">{{t.gr}}</td>
                 <td ng-show="formInfo.showTranscript">{{t.utr5s | number}}</td>
                 <td ng-show="formInfo.showTranscript">{{t.utr5e | number}}</td>
@@ -131,7 +135,7 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
     <script src="http://code.angularjs.org/1.2.20/angular-sanitize.min.js"></script>
     <script type="text/javascript" src="js/ng-csv.min.js"></script>
-    <script type="text/javascript" src="js/main.js?v=11"></script>
+    <script type="text/javascript" src="js/main.js?v=12"></script>
   
 </body>
 </html>

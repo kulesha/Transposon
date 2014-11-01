@@ -47,6 +47,7 @@ td {
 }
 .sortable {
     text-decoration: underline;
+    cursor:pointer;
 }
 
 .sort-true {
