@@ -8,7 +8,10 @@
 </head>
 <body ng-app="geneInfoApp">
     <div ng-controller="geneInfoCtrl as gi">
-    <div class="row" style="padding-left:20px;padding-right:20px">
+
+        <div ng-hide="uploadEnabled" ng-cloak> Your browser does not support HTML5 : Try to update it.</div>
+
+        <div class="row" style="padding-left:20px;padding-right:20px">
         <form>
             <!--div class="col-xs-3">
                 <div class="input-group">
@@ -19,15 +22,26 @@
                 </div>
             </div-->                                            
          
-            <div class="col-xs-3">
+            <!--div class="col-xs-3">
                 <div class="input-group">
-                    <input type="text" id="fName" name="fName" class="form-control" placeholder="Enter Transposon file" ng-model="formInfo.fname"/>    
+                    <input type="text" id="fName" name="fName" class="form-control" placeholder="Enter Transposon file" ng-model="formInfo.fname"/>
+                    
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-success" ng-click="gi.transposonSearch()">Parse</button>
                     </span>
                 </div>
+            </div-->   
+            <div class="col-xs-3">
+                <div class="input-group">
+                    <input type="file" id="file" name="file"/>
+                    
+                    <span class="input-group-btn">
+                        <button class="btn btn-success" ng-click="Upload()">Parse</button>
+                    </span>
+                </div>
             </div>   
-        
+
+            
         </form>
         
         <div ng-show="message" style="text-align:center" ng-cloak>        

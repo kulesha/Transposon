@@ -137,6 +137,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         
     };
 
+    $scope.uploadEnabled = $window.FileReader === undefined ? false : true;
+    
     $scope.serverList = [
         { name: 'elatest', division: 'ensembl', label: 'Ensembl ( GRCh38 )' , url: 'http://rest.ensembl.org', eurl: 'http://www.ensembl.org'},
         { name: 'egrch37', division: 'ensembl', label: 'Ensembl ( GRCh37 )' , url: 'http://grch37.rest.ensembl.org', eurl: 'http://grch37.ensembl.org'}
@@ -167,6 +169,47 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         return 0;                
     };
 
+    $scope.Upload = function() {
+        console.log("upload");
+        var f = document.getElementById('file').files[0];
+        r = new FileReader();
+        r.onloadend = function(e){
+            var data = e.target.result;
+            console.log(data);
+
+            self.reset();
+            $scope.sorting = { column : 'g' , asc: true };
+
+            var entries = data.split(/\n/).filter(function(n) {return n != undefined });
+        //console.log(entries);
+            entries.shift();
+            
+            $scope.genes = {};
+            $scope.transposons = entries.map(function(item) {
+                var edata = item.split(/,/);
+                if (edata[0]) {
+                    var g = edata[6];
+                    if (g && g.match(/[A-Z|a-z]/) && g !== "Gene") {
+                        $scope.genes[ g ] = { };                        
+                    }                    
+                    return { id: edata[0], r: edata[1], s : parseInt(edata[2]), e: parseInt(edata[3]), rpos:parseInt(edata[4]), rneg:parseInt(edata[5]), g: edata[6], o: edata[7] == '-' ? -1 : 1};
+                 
+                }
+            });
+        
+          //console.log($scope.transposons);
+          //  console.log($scope.genes);
+            
+            $scope.toFind = Object.keys($scope.genes).sort();
+            $scope.toFind.push('BRCA2'); // tmp fix 
+            $scope.gHash = {};
+            $scope.finished = 0;
+            self.fetch_genes(0);
+        };
+   
+        r.readAsText(f);
+        
+    };
     
      $scope.getArray = [{a: 1, b:2}, {a:3, b:4}];
    $scope.getResults = function() {
