@@ -159,7 +159,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         source: 'elatest',
         division: 'ensembl',
         commonInsertions : false,
-        commonWidth: 200,
+        commonWidth: 5000,
         transFilter: 0
         
     };
@@ -308,8 +308,9 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     $scope.genes[ g ] = { };                        
                 }                    
             });
+            
           //console.log($scope.transposons);
-          //  console.log($scope.genes);
+          console.log("Genes to find : " + Object.keys($scope.genes).length);
             
             $scope.toFind = Object.keys($scope.genes).sort();
             $scope.toFind.push('BRCA2'); // tmp fix 

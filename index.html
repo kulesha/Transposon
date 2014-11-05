@@ -11,84 +11,62 @@
 
         <div ng-hide="uploadEnabled" ng-cloak> Your browser does not support HTML5 : Try to update it.</div>
 
-        <div class="row" style="padding-left:20px;padding-right:20px">
+    <div class="row" style="padding-left:20px;padding-right:20px">
         <form>
-            <!--div class="col-xs-3">
-                <div class="input-group">
-                    <textarea id="geneName" rows="5" name="geneName" class="form-control" placeholder="Enter gene name" ng-model="formInfo.gene"/>   </textarea> 
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-success" ng-click="gi.find()">Find</button>
-                    </span>
-                </div>
-            </div-->                                            
-         
-            <!--div class="col-xs-3">
-                <div class="input-group">
-                    <input type="text" id="fName" name="fName" class="form-control" placeholder="Enter Transposon file" ng-model="formInfo.fname"/>
-                    
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-success" ng-click="gi.transposonSearch()">Parse</button>
-                    </span>
-                </div>
-            </div-->   
-            <div class="col-xs-3">
-                <div class="input-group">
-                    <input type="file" id="file" name="file"/>
-                    
-                    <span>
-                        <em>Filter:</em> <select class="selectpicker" name="transFilter" ng-model="formInfo.transFilter">
+            <div class="col-xs-6">
+                <table class="table table-condensed table-striped table-bordered" >
+                    <tr>
+                        <td>CSV file</td>
+                        <td><input type="file" id="file" name="file"/></td>
+                        <td rowspan="3" style="text-align:center;vertical-align:middle"><button class="btn btn-success" ng-click="Upload()">Parse</button></td> 
+                        <td class="col-xs-3" rowspan="3" ng-show="message" style="text-align:left" ng-cloak>
+                            <span ng-model="message" style="background-color:pink;margin-top:10px;">{{ message }}</span>
+                        </td>
+                        <td rowspan="3" ng-show="finished" style="text-align:center;vertical-align:middle">
+                            <button  class="btn btn-default" ng-csv="getResults2" filename="table.csv" csv-header="getHeader2()" field-separator=",">Export to CSV</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><em>Filter:</em></td>
+                        <td><select class="selectpicker" name="transFilter" ng-model="formInfo.transFilter">
                             <option value="0"> None </option>
                             <option value="1"> Close features only </option>
                             <option value="2"> Common insertions only </option>                        
-                        </select>
-                    
-                        <input type="text" name="commonWidth" ng-model="formInfo.commonWidth" ng-show="formInfo.transFilter"/>
-                        
-                        <!--<em>Common insertions only:</em> <input name="commonInsertions" type="checkbox" ng-model="formInfo.commonInsertions" />
-                        
--->
-                    </span>
-
-                    <span class="input-group-btn">
-                        <button class="btn btn-success" ng-click="Upload()">Parse</button>
-                    </span>
-                </div>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr ng-show="formInfo.transFilter">
+                        <td><em>Max distance:</em></td>
+                        <td><input type="text" name="commonWidth" ng-model="formInfo.commonWidth" /></td>
+                    </tr>
+                </table>
             </div>   
 
             
-        </form>
-        
-        <div ng-show="message" style="text-align:center" ng-cloak>        
-            <span ng-model="message" style="background-color:pink;margin-top:10px;">{{ message }}</span>
-            
-             <button ng-show="finished" class="btn btn-default"
-              ng-csv="getResults2" filename="table.csv" csv-header="getHeader2()" field-separator=","
-              >Export to CSV</button>
-
-            
-        </div>     
-    
+        </form>            
     </div>
     <div class="row" style="padding-left:20px; padding-right:20px; margin-right:20px;" ng-model="transposons" ng-show="transposons.length" ng-cloak id="transposons">
-        <table ng-show="finished" class="width:50%" style="margin-left:15px;">
+        <table ng-show="finished" class="col-xs-6" style="margin-left:15px;margin-bottom:20px;">
             <tr><th>Coding transcripts</th>
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="utr5" style="padding:10px"> 5' UTR </td>
                 <td class="cds" style="padding:10px"> Coding sequence </td>
                 <td class="utr3" style="padding:10px"> 3' UTR </td>
                 <td class="flank3" style="padding:10px"> 3' Flank </td>
+                <td ng-show="finished" style="text-align:center">
+                    <em>Show transcript data:</em> <input type="checkbox" ng-model="formInfo.showTranscript" name="showtranscript"/>
+                </td>
             </tr>
             <tr><th>Non-coding transcripts</th>
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="nct" style="padding:10px;text-align:center;" colspan="3"> Non-coding transcript</td>
                 <td class="flank3" style="padding:10px"> 3' Flank </td>
+                <td ng-show="finished">&nbsp;</td>
             </tr>
+            
         </table>
-        <span ng-show="finished">
-            <em>Show transcript data:</em> <input type="checkbox" ng-model="formInfo.showTranscript" name="showtranscript"/>
-        </span>
-    
-        <table class="table table-condensed table-striped table-bordered" style="margin-left:15px;margin-right:25px;padding-right:10px;">
+        
+        <table class="cols-xs-12 table table-condensed table-striped table-bordered" style="margin-left:15px;margin-right:25px;margin-top:20px;padding-right:10px;padding-top:20px">
             <tr>
                 <th>Sample</th>
                 
