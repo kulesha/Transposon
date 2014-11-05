@@ -2,6 +2,14 @@ function sleep(millis, callback) {
     setTimeout(function() { callback(); }, millis);
 }
 
+function getProbeCount (arr) {
+    var counts =  arr.reduce(function(prev, next) {
+            prev[next.id] = prev[next.id] ? prev[next.id] + 1 : 1;
+            return prev;
+    }, {});
+    return Object.keys(counts).length;
+}
+
 function sortFeatures(a, b) {
     if (a.r > b.r) {
         return 1;
@@ -151,7 +159,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         source: 'elatest',
         division: 'ensembl',
         commonInsertions : false,
-        commonWidth: 200
+        commonWidth: 200,
+        transFilter: 0
         
     };
 
@@ -177,8 +186,44 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     $scope.sortColumn = 'id';
     $scope.sortDescending = false;
     
-    
     $scope.filterCommonInsertions = function(w) {
+        $scope.filterCloseFeatures(w);
+        var res = $scope.transposons;
+//        console.log(res);
+        var curgr = "xxx";
+        var curitems = [];
+        var common = [];
+        var g = 0;
+        for (var i in res) {
+            if (res[i].group === curgr) {
+                curitems.push(res[i]);
+            } else {
+                
+                if (curitems.length) {
+                    if (getProbeCount(curitems) > 1) {
+                        curitems.map(function(item) {
+                            item.group = g % 2 ? 'even' : 'odd';
+                            common.push(item);                            
+                        });
+                        g++;
+                    }
+                }
+                curitems = [ res[i] ];
+                curgr = res[i].group;
+            }
+        }
+        
+        if (curitems) {
+            if (getProbeCount(curitems) > 1) {
+                curitems.map(function(item) {
+                    common.push(item);
+                });
+            }
+        }
+        $scope.transposons = common;
+    };
+    
+    $scope.filterCloseFeatures = function(w) {
         //console.log($scope.transposons);
         var res = $scope.transposons.sort(sortFeatures);
         var prev = { r : 'ZZZ', s: -1, e: -1, min: -1, max: -1};
@@ -246,8 +291,14 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                 }
             }).filter(function(n) {return n !== undefined });
         
-            if ($scope.formInfo.commonInsertions) {
-                $scope.filterCommonInsertions($scope.formInfo.commonWidth);
+            if ($scope.formInfo.transFilter) {
+                if ($scope.formInfo.transFilter == 1) {
+                    $scope.filterCloseFeatures($scope.formInfo.commonWidth);
+                } else {
+                    if ($scope.formInfo.transFilter == 2) {
+                        $scope.filterCommonInsertions($scope.formInfo.commonWidth);
+                    }
+                }
             }
             
             $scope.genes = {};
@@ -336,7 +387,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     this.getGene = function(gene) {
         var o = { display_name: gene };
         $scope.message = " Looking for " + gene;
-        console.log(" Looking for " + gene);
+//        console.log(" Looking for " + gene);
         $scope.total++;
          // first we look for the gene
         var url = $scope.formInfo.restServer + '/lookup/symbol/'+self.species+'/' + gene
@@ -429,7 +480,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     this.fetchGene = function(gene) {
         var o = { display_name: gene };
         $scope.message = " Looking for " + gene;
-        console.log(" Looking for " + gene);
+//        console.log(" Looking for " + gene);
         $scope.total++;
          // first we look for the gene
         var url = $scope.formInfo.restServer + '/lookup/symbol/'+self.species+'/' + gene

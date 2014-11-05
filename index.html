@@ -36,8 +36,17 @@
                     <input type="file" id="file" name="file"/>
                     
                     <span>
-                    <em>Common insertions only:</em> <input name="commonInsertions" type="checkbox" ng-model="formInfo.commonInsertions" />
-                    <input type="text" name="commonWidth" ng-model="formInfo.commonWidth" ng-show="formInfo.commonInsertions"/>
+                        <em>Filter:</em> <select class="selectpicker" name="transFilter" ng-model="formInfo.transFilter">
+                            <option value="0"> None </option>
+                            <option value="1"> Close features only </option>
+                            <option value="2"> Common insertions only </option>                        
+                        </select>
+                    
+                        <input type="text" name="commonWidth" ng-model="formInfo.commonWidth" ng-show="formInfo.transFilter"/>
+                        
+                        <!--<em>Common insertions only:</em> <input name="commonInsertions" type="checkbox" ng-model="formInfo.commonInsertions" />
+                        
+-->
                     </span>
 
                     <span class="input-group-btn">
