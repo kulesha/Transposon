@@ -1,3 +1,7 @@
+function padDigits(number, digits) {
+    return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
+}
+
 function sleep(millis, callback) {
     setTimeout(function() { callback(); }, millis);
 }
@@ -287,10 +291,13 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     
                     e.min = e.s < e.e ? e.s : e.e;
                     e.max = e.s > e.e ? e.s : e.e;
+                    e.posX = e.r + ',' + padDigits(e.min, 10);
                     return e;                 
                 }
             }).filter(function(n) {return n !== undefined });
         
+            console.log($scope.transposons);
+            
             if ($scope.formInfo.transFilter) {
                 if ($scope.formInfo.transFilter == 1) {
                     $scope.filterCloseFeatures($scope.formInfo.commonWidth);
@@ -359,8 +366,6 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     $scope.getResults2 = function() {
         var ar = new Array();
         var tsp = $scope.transposons.sort($scope.cmpTransposons);
-        console.log(tsp);
-        
         for (var i in tsp) {
             var e = tsp[i];
             if (e) {
