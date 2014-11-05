@@ -35,6 +35,11 @@
                 <div class="input-group">
                     <input type="file" id="file" name="file"/>
                     
+                    <span>
+                    <em>Common insertions only:</em> <input name="commonInsertions" type="checkbox" ng-model="formInfo.commonInsertions" />
+                    <input type="text" name="commonWidth" ng-model="formInfo.commonWidth" ng-show="formInfo.commonInsertions"/>
+                    </span>
+
                     <span class="input-group-btn">
                         <button class="btn btn-success" ng-click="Upload()">Parse</button>
                     </span>
@@ -50,6 +55,8 @@
              <button ng-show="finished" class="btn btn-default"
               ng-csv="getResults2" filename="table.csv" csv-header="getHeader2()" field-separator=","
               >Export to CSV</button>
+
+            
         </div>     
     
     </div>
@@ -117,7 +124,7 @@
             </tr>
 
             <tr ng-repeat="t in transposons | orderBy:sortColumn:sortDescending">
-                <td>{{t.id}}</td>
+                <td class="{{t.group}}">{{t.id}}</td>
                 <td>{{t.r}}</td>
                 <td>{{t.s | number}}</td>
                 <td>

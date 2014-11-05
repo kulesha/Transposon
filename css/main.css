@@ -1,3 +1,11 @@
+.odd {
+    color:red;
+}
+
+.even {
+    color:green;
+}
+
 th {
     text-align:center;
     }

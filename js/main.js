@@ -2,6 +2,22 @@ function sleep(millis, callback) {
     setTimeout(function() { callback(); }, millis);
 }
 
+function sortFeatures(a, b) {
+    if (a.r > b.r) {
+        return 1;
+    }
+    if (a.r < b.r) {
+        return -1;
+    }
+    if (a.min > b.min) {    
+        return 1;
+    }
+    if (a.min < b.min) {
+        return -1;
+    }
+    return 0;                
+};
+
 var labels = {
     'flank5' : "5' Flank",
     'utr5' : "5' UTR",
@@ -133,7 +149,9 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         restServer: 'http://grch37.rest.ensembl.org',
         eServer: 'http://grch37.ensembl.org',
         source: 'elatest',
-        division: 'ensembl'
+        division: 'ensembl',
+        commonInsertions : false,
+        commonWidth: 200
         
     };
 
@@ -159,6 +177,40 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     $scope.sortColumn = 'id';
     $scope.sortDescending = false;
     
+    
+    $scope.filterCommonInsertions = function(w) {
+        //console.log($scope.transposons);
+        var res = $scope.transposons.sort(sortFeatures);
+        var prev = { r : 'ZZZ', s: -1, e: -1, min: -1, max: -1};
+        var f = 0;
+        var group = 0;
+//        res.map(function(item, index){
+//            console.log(index + ' : ' + item);
+//        });
+        
+        var res2 = res.map(function(item) {
+            var pitem = prev;
+            prev = item;
+            if (pitem.r == item.r) {
+                if (item.min - pitem.max   < w) {                                
+                    f = 1;
+                    pitem.group = group % 2 ? 'even' : 'odd';  
+                    return pitem;
+                }
+            }
+            if (f == 1) {
+                f = 0;
+                pitem.group = group % 2 ? 'even' : 'odd';  
+                group ++;
+                return pitem;
+            }
+            f = 0;
+        }).filter(function(n) {return n !== undefined} );
+
+        $scope.transposons = res2;
+        $scope.sortColumn = '';
+    };
+    
     $scope.cmpTransposons = function (a, b) {
         if (a[$scope.sortColumn] < b[$scope.sortColumn]) {
             return $scope.sortDescending ? 1 : -1;
@@ -170,33 +222,41 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     };
 
     $scope.Upload = function() {
-        console.log("upload");
         var f = document.getElementById('file').files[0];
         r = new FileReader();
         r.onloadend = function(e){
             var data = e.target.result;
-            console.log(data);
+//            console.log(data);
 
             self.reset();
             $scope.sorting = { column : 'g' , asc: true };
 
-            var entries = data.split(/\n/).filter(function(n) {return n != undefined });
+            var entries = data.split(/\n/).filter(function(n) {return n !== undefined });
         //console.log(entries);
             entries.shift();
             
-            $scope.genes = {};
             $scope.transposons = entries.map(function(item) {
                 var edata = item.split(/,/);
-                if (edata[0]) {
-                    var g = edata[6];
-                    if (g && g.match(/[A-Z|a-z]/) && g !== "Gene") {
-                        $scope.genes[ g ] = { };                        
-                    }                    
-                    return { id: edata[0], r: edata[1], s : parseInt(edata[2]), e: parseInt(edata[3]), rpos:parseInt(edata[4]), rneg:parseInt(edata[5]), g: edata[6], o: edata[7] == '-' ? -1 : 1};
-                 
+                if (edata[0]) {                    
+                    var e = { id: edata[0], r: edata[1], s : parseInt(edata[2]), e: parseInt(edata[3]), rpos:parseInt(edata[4]), rneg:parseInt(edata[5]), g: edata[6], o: edata[7] == '-' ? -1 : 1};
+                    
+                    e.min = e.s < e.e ? e.s : e.e;
+                    e.max = e.s > e.e ? e.s : e.e;
+                    return e;                 
                 }
-            });
+            }).filter(function(n) {return n !== undefined });
         
+            if ($scope.formInfo.commonInsertions) {
+                $scope.filterCommonInsertions($scope.formInfo.commonWidth);
+            }
+            
+            $scope.genes = {};
+            $scope.transposons.map(function(item) {
+                var g = item.g;
+                if (g && g.match(/[A-Z|a-z]/) && g !== "Gene") {
+                    $scope.genes[ g ] = { };                        
+                }                    
+            });
           //console.log($scope.transposons);
           //  console.log($scope.genes);
             
