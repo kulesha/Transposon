@@ -72,12 +72,12 @@ function drawKaryotype(data) {
             //console.log(label);
             var bins = getCounts(points);
             for (var j in bins) {
-              //  console.log(j + ' : ' + bins[j]);
+              //console.log(j + ' : ' + bins[j]);
                 var h = bins[j]*2;
                 var color = "#800";
                 
                 if (h > chrH ) {
-                    h = chrH;
+                h = chrH;
                     color = "#f00";
                 }
                 
@@ -285,6 +285,12 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     $scope.geneInfo = {}; 
     
     var self = this;
+    
+    this.scroll = function(anchor) {
+        $location.hash(anchor);      
+        $anchorScroll();            
+    };
+    
     self.species = 'homo_sapiens';
     
     $scope.results = [];

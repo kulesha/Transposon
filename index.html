@@ -63,7 +63,7 @@
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="nct" style="padding:10px;text-align:center;" colspan="3"> Non-coding transcript</td>
                 <td class="flank3" style="padding:10px"> 3' Flank </td>
-                <td style="text-align:center"><a href="#distribution">View feature dstribution</a></td>
+                <td style="text-align:center"><a ng-click="gi.scroll('distribution')">View feature dstribution</a></td>
             </tr>
             
         </table>
@@ -151,7 +151,7 @@
             </tr>
         </table>
     </div>
-    <a name="distribution" style="margin-bottom:20px"> </a>
+    <a ng-show="finished" name="distribution" style="margin:20px; text-decoration:none"> Distributions of transposons across the genome </a>
     <div id="karyotype" style="margin-left:20px;height:1000px;width:1600px">
     </div>
         
