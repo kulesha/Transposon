@@ -5,6 +5,8 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css?v=13">
+    <script type="text/javascript" src="js/raphael-min.js"></script>
+
 </head>
 <body ng-app="geneInfoApp">
     <div ng-controller="geneInfoCtrl as gi">
@@ -13,7 +15,7 @@
 
     <div class="row" style="padding-left:20px;padding-right:20px">
         <form>
-            <div class="col-xs-6">
+            <div class="col-xs-8">
                 <table class="table table-condensed table-striped table-bordered" >
                     <tr>
                         <td>CSV file</td>
@@ -46,7 +48,7 @@
         </form>            
     </div>
     <div class="row" style="padding-left:20px; padding-right:20px; margin-right:20px;" ng-model="transposons" ng-show="transposons.length" ng-cloak id="transposons">
-        <table ng-show="finished" class="col-xs-6" style="margin-left:15px;margin-bottom:20px;">
+        <table ng-show="finished" class="col-xs-8" style="margin-left:15px;margin-bottom:20px;">
             <tr><th>Coding transcripts</th>
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="utr5" style="padding:10px"> 5' UTR </td>
@@ -61,7 +63,7 @@
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="nct" style="padding:10px;text-align:center;" colspan="3"> Non-coding transcript</td>
                 <td class="flank3" style="padding:10px"> 3' Flank </td>
-                <td ng-show="finished">&nbsp;</td>
+                <td style="text-align:center"><a href="#distribution">View feature dstribution</a></td>
             </tr>
             
         </table>
@@ -69,20 +71,23 @@
         <table class="cols-xs-12 table table-condensed table-striped table-bordered" style="margin-left:15px;margin-right:25px;margin-top:20px;padding-right:10px;padding-top:20px">
             <tr>
                 <th>Sample</th>
+                <th colspan="2"> Gene </th>
                 
                 <th colspan="8">Breakpoint</th>                
-                <th colspan="2"> Gene </th>
                 <th colspan="8" ng-show="finished && formInfo.showTranscript">e! Transcript</th>
             </tr>
             <tr>
                 <th>&nbsp;</th>                
+            
+                <th colspan="2">&nbsp;</th> 
+                
                 <th>&nbsp;</th>
                 <th colspan="2">Positive</th>
                 <th colspan="2">Negative</th>         
                 <th colspan="2">Support</th>
                 <th>&nbsp;</th>                
                 
-                <th colspan="2">&nbsp;</th>                
+                               
                 <th ng-show="finished && formInfo.showTranscript">ID</th>
                 <th ng-show="finished && formInfo.showTranscript">Region</th>
                 <th colspan="2" ng-show="finished && formInfo.showTranscript">5'UTR</th>
@@ -92,6 +97,10 @@
             <tr>
                 <th class="sortable" ng-class="selectedCls('id')" ng-click="changeSorting('id')">ID</th>
                 
+                <th class="sortable" ng-class="selectedCls('g')" ng-click="changeSorting('g')">Name</th>
+                <th>Ori</th>
+    
+                
                 <th class="sortable"  ng-class="selectedCls('posX')" ng-click="changeSorting('posX')">Region</th>
                 <th>Location</th>
                 <th>Position</th>                
@@ -100,10 +109,9 @@
                 <th class="sortable" ng-class="selectedCls('rpos')" ng-click="changeSorting('rpos')"> Start </th>
                 <th class="sortable" ng-class="selectedCls('rneg')" ng-click="changeSorting('rneg')"> End </th>
                 <th>Ori</th>            
-                <th class="sortable" ng-class="selectedCls('g')" ng-click="changeSorting('g')">Name</th>
-                <th>Ori</th>
-                <th ng-show="finished && formInfo.showTranscript">&nbsp;</th>
+    
                 
+                <th ng-show="finished && formInfo.showTranscript">&nbsp;</th>                
                 <th ng-show="finished && formInfo.showTranscript">&nbsp;</th>
                 <th ng-show="finished && formInfo.showTranscript">Start</th><th ng-show="finished && formInfo.showTranscript">End</th>
                 <th ng-show="finished && formInfo.showTranscript">Start</th><th ng-show="finished && formInfo.showTranscript">End</th>
@@ -112,6 +120,10 @@
 
             <tr ng-repeat="t in transposons | orderBy:sortColumn:sortDescending">
                 <td class="{{t.group}}">{{t.id}}</td>
+                
+                <td class="{{t.group}}">{{t.g}}</td>
+                <td class="{{t.o == t.ori ? 'ok' : 'diff'}}">{{t.ori ? (t.ori > 0 ? '+' : '-') : ''}}</td>    
+
                 <td>{{t.r}}</td>
                 <td>{{t.s | number}}</td>
                 <td>
@@ -125,8 +137,7 @@
                 <td>{{t.rpos}}</td>
                 <td>{{t.rneg}}</td>                
                 <td>{{t.o > 0 ? '+' : '-'}}</td>
-                <td>{{t.g}}</td>
-                <td class="{{t.o == t.ori ? 'ok' : 'diff'}}">{{t.ori ? (t.ori > 0 ? '+' : '-') : ''}}</td>    
+
                 <td ng-show="finished && formInfo.showTranscript"><a href="{{t.turl}}" target="_blank">{{t.tid}}</a></td>
                 <td class="{{t.gr == t.r ? 'ok' : 'fail'}}" ng-show="finished && formInfo.showTranscript">{{t.gr}}</td>
                 <td ng-show="finished && formInfo.showTranscript">{{t.utr5s | number}}</td>
@@ -140,15 +151,14 @@
             </tr>
         </table>
     </div>
-        
-        
+    <a name="distribution" style="margin-bottom:20px"> </a>
+    <div id="karyotype" style="margin-left:20px;height:1000px;width:1600px">
+    </div>
         
     </div>
-
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
     <script src="http://code.angularjs.org/1.2.20/angular-sanitize.min.js"></script>
     <script type="text/javascript" src="js/ng-csv.min.js"></script>
     <script type="text/javascript" src="js/main.js?v=13"></script>
-  
 </body>
 </html>

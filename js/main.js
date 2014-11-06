@@ -1,9 +1,113 @@
+function drawKaryotype(data) {
+    var r = Raphael("karyotype");
+ 
+    var karyotype = {        
+        1 : { label : "1", length : 249250621 },
+        2 : { label : "2", length : 243199373 },
+        3 : { label : "3", length : 198022430 },
+        4 : { label : "4", length : 191154276 },
+        5 : { label : "5", length : 180915260 },
+        6 : { label : "6", length : 171115067},
+        7 : { label : "7", length : 159138663 },
+        8 : { label : "8", length : 146364022 },
+        9 : { label : "9", length : 141213431 },
+        10 : { label : "10", length : 135534747 },
+        11 : { label : "11", length : 135006516 },
+        12 : { label : "12", length : 133851895 },
+        13 : { label : "13", length : 115169878 },
+        14 : { label : "14", length : 107349540 },
+        15 : { label : "15", length : 102531392 },
+        16 : { label : "16", length : 90354753 },
+        17 : { label : "17", length : 81195210 },
+        18 : { label : "18", length : 78077248 },
+        19 : { label : "19", length : 59128983 },
+        20 : { label : "20", length : 63025520 },
+        21 : { label : "21", length : 48129895 },
+        22 : { label : "22", length : 51304566 },
+        23 : { label : "X", length : 155270560 },
+        24 : { label : "Y", length : 59373566},
+        25 : { label : "MT", length : 16569}
+    };
+
+    var x = 0;
+    var y = 5;
+    var maxX = karyotype["1"].length;
+    
+    //console.log(data);
+    var chrH = 20;
+    var w = 1;
+    var xOffset = 30;
+    var gHeight = 630;
+    var binNum = 30;
+    var binSize = (maxX / binNum/ 1000000) ;
+    for (var k = 1; k <= binNum; k++) {
+        var cap = Math.floor(k * binSize) + 'M';
+        
+        var t = r.text(xOffset + 50 * k, y,  cap);        
+
+        var c= r.rect(xOffset + 50 * k, y+5 , 1 , gHeight-5);
+        c.attr("stroke", "#aea");    
+        
+        var t = r.text(xOffset + 50 * k, gHeight+5, cap);        
+        
+    }
+    y = y +10;
+    
+    for( var i in karyotype) {
+        var len = karyotype[i].length / maxX * 1500 ;
+        var label = karyotype[i].label;
+        var points = data.map(function(item) {
+            if (item.r == label) {
+                return Math.floor(item.min / maxX * 1500);
+            }
+        }).filter(function(n) {return n !== undefined} );
+                        
+        var t = r.text(x+10, y+5, label);        
+        var c= r.rect(x + 30, y, len , chrH, 5);
+        c.attr("stroke", "#bbb");    
+    
+        //c.attr("fill", "#eee");    
+        
+        if (points.length) {
+            //console.log(label);
+            var bins = getCounts(points);
+            for (var j in bins) {
+              //  console.log(j + ' : ' + bins[j]);
+                var h = bins[j]*2;
+                var color = "#800";
+                
+                if (h > chrH ) {
+                    h = chrH;
+                    color = "#f00";
+                }
+                
+                var c2= r.rect(x + 30 + parseInt(j), y + chrH - h , w , h);
+                c2.attr("stroke", color);    
+                c2.attr("fill", color);    
+        
+            }
+        }
+
+        
+        y = y + 25;
+    }
+}
+    
+
 function padDigits(number, digits) {
     return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
 }
 
 function sleep(millis, callback) {
     setTimeout(function() { callback(); }, millis);
+}
+
+function getCounts(arr) {
+    var counts =  arr.reduce(function(prev, next) {
+            prev[next] = prev[next] ? prev[next] + 1 : 1;
+            return prev;
+    }, {});
+    return counts;
 }
 
 function getProbeCount (arr) {
@@ -257,7 +361,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         }).filter(function(n) {return n !== undefined} );
 
         $scope.transposons = res2;
-        $scope.sortColumn = '';
+        $scope.sortColumn = 'posX';
     };
     
     $scope.cmpTransposons = function (a, b) {
@@ -296,8 +400,6 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                 }
             }).filter(function(n) {return n !== undefined });
         
-            console.log($scope.transposons);
-            
             if ($scope.formInfo.transFilter) {
                 if ($scope.formInfo.transFilter == 1) {
                     $scope.filterCloseFeatures($scope.formInfo.commonWidth);
@@ -660,6 +762,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
             
     //        console.log($scope.transposons);
     };
+    
     this.fetch_genes = function( i ) {
         if ($scope.toFind[i]) {
             var gene = $scope.toFind[i].replace(/\s/g, '');
@@ -669,7 +772,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                 if (i === $scope.toFind.length) {
                     $scope.message = 'Done';
                     $scope.finished = 1;
-                    this.calcPositions();                    
+                    this.calcPositions();
+                    drawKaryotype($scope.transposons);
                 } else {
                     setTimeout(function() { self.fetch_genes(i); }, 1000);
                 }
