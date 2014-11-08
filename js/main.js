@@ -73,7 +73,7 @@ function drawKaryotype(data) {
             var bins = getCounts(points);
             for (var j in bins) {
               //console.log(j + ' : ' + bins[j]);
-                var h = bins[j]*2;
+                var h = bins[j];
                 var color = "#800";
                 
                 if (h > chrH ) {
@@ -425,7 +425,9 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
             });
             
           //console.log($scope.transposons);
-          console.log("Genes to find : " + Object.keys($scope.genes).length);
+            console.log("Genes to find : " + Object.keys($scope.genes).length);
+            var d = new Date();
+            $scope.startedAt = d.getTime();
             
             $scope.toFind = Object.keys($scope.genes).sort();
             $scope.toFind.push('BRCA2'); // tmp fix 
@@ -713,14 +715,16 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                 self.getGene(gene);
                 i++;
                 if (i === $scope.toFind.length) {
-                    $scope.message = 'Done';
+                    var tm = (Date.getTime - $scope.startedAt) / 1000;
+                    $scope.message = 'Done in ' + tm +'s';
                     $scope.finished = 1;
                 } else {
-                    setTimeout(function() { self.fetch(i); }, 1000);
+                    setTimeout(function() { self.fetch(i); }, 800);
                 }
             }
         } else {
-            $scope.message = 'Done';
+            var tm = (Date.getTime - $scope.startedAt) / 1000;
+            $scope.message = 'Done in' + tm +'s';
             $scope.finished = 1;
         }
     };
@@ -776,12 +780,15 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                 self.fetchGene(gene);
                 i++;
                 if (i === $scope.toFind.length) {
-                    $scope.message = 'Done';
+                    
+                    var d = new Date();
+                    var tm = (d.getTime() - $scope.startedAt) / 1000;
+                    $scope.message = 'Done in ' + tm +'s';
                     $scope.finished = 1;
                     this.calcPositions();
                     drawKaryotype($scope.transposons);
                 } else {
-                    setTimeout(function() { self.fetch_genes(i); }, 1000);
+                    setTimeout(function() { self.fetch_genes(i); }, 500);
                 }
             }
         } else {
