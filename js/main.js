@@ -1,6 +1,6 @@
-function drawKaryotype(data) {
-    var r = Raphael("karyotype");
- 
+function drawKaryotype(r, data) {
+    r.clear();
+
     var karyotype = {        
         1 : { label : "1", length : 249250621 },
         2 : { label : "2", length : 243199373 },
@@ -33,7 +33,6 @@ function drawKaryotype(data) {
     var y = 5;
     var maxX = karyotype["1"].length;
     
-    //console.log(data);
     var chrH = 20;
     var w = 1;
     var xOffset = 30;
@@ -300,6 +299,9 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
     $scope.sortColumn = 'id';
     $scope.sortDescending = false;
     
+    $scope.canvas = Raphael("karyotype");
+
+    
     $scope.filterCommonInsertions = function(w) {
         $scope.filterCloseFeatures(w);
         var res = $scope.transposons;
@@ -425,7 +427,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
             });
             
           //console.log($scope.transposons);
-            console.log("Genes to find : " + Object.keys($scope.genes).length);
+            //console.log("Genes to find : " + Object.keys($scope.genes).length);
             var d = new Date();
             $scope.startedAt = d.getTime();
             
@@ -786,7 +788,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     $scope.message = 'Done in ' + tm +'s';
                     $scope.finished = 1;
                     this.calcPositions();
-                    drawKaryotype($scope.transposons);
+                    drawKaryotype($scope.canvas, $scope.transposons);
                 } else {
                     setTimeout(function() { self.fetch_genes(i); }, 500);
                 }
