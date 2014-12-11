@@ -26,61 +26,83 @@
     
         
     <div class="row" style="padding-left:20px;padding-right:20px">
-        <form>
+        <form enctype="multipart/form-data" method="post">
             <div class="col-xs-8">
                 <table class="table table-condensed table-striped table-bordered" >
                     <tr>
                         <td>CSV file</td>
-                        <td><input type="file" id="file" name="file"/></td>
-                        <td rowspan="3" style="text-align:center;vertical-align:middle"><button class="btn btn-success" ng-click="Upload()">Parse</button></td> 
-                        <td class="col-xs-3" rowspan="3" ng-show="message" style="text-align:left" ng-cloak>
-                            <span ng-model="message" style="background-color:pink;margin-top:10px;">{{ message }}</span>
+                        <td><input type="file" id="myfile" name="myfile"/></td>
+                        <td rowspan="4" style="text-align:center;vertical-align:middle">
+                            <button class="btn btn-success" ng-click="Process()" />Process</button>
+                        <button class="btn btn-success" ng-click="Upload()" />Upload</button>
+                        </td> 
+                        <td class="col-xs-3" style="text-align:left" ng-cloak ng-show="message">
+                            <span  ng-model="message" style="background-color:pink;margin-top:10px;">{{ message }}</span>
                         </td>
-                        <td rowspan="3" ng-show="finished" style="text-align:center;vertical-align:middle">
+                        <td rowspan="4" ng-show="finished" style="text-align:center;vertical-align:middle">
                             <button  class="btn btn-default" ng-csv="getResults2" filename="table.csv" csv-header="getHeader2()" field-separator=",">Export to CSV</button>
                         </td>
                     </tr>
                     <tr>
                         <td><em>Filter:</em></td>
-                        <td><select class="selectpicker" name="transFilter" ng-model="formInfo.transFilter">
+                        <td style="text-align:left"><select class="selectpicker" name="transFilter" ng-model="formInfo.transFilter">
                             <option value="0"> None </option>
                             <option value="1"> Close features only </option>
                             <option value="2"> Common insertions only </option>                        
                             </select>
                         </td>
+                        <td style="text-align:left" ng-show="message"><a ng-show="finished" ng-click="gi.scroll('distribution')" style="cursor:pointer">View feature distribution</a></td>
                     </tr>
                     <tr ng-show="formInfo.transFilter">
                         <td><em>Max distance:</em></td>
-                        <td><input type="text" name="commonWidth" ng-model="formInfo.commonWidth" /></td>
+                        <td style="text-align:left"><input type="text" name="commonWidth" ng-model="formInfo.commonWidth" /></td>
+                        <td ng-show="message">&nbsp;</td>
                     </tr>
+                    <tr>
+                        <td><em>Map to genes:</em></td>
+                        <td style="text-align:left">
+                            <input type="checkbox" ng-model="formInfo.map2genes"/>
+                            <span ng-show="formInfo.map2genes">
+                                <em>Max distance to gene:</em>
+                                <input type="text" name="distanceToGenes" ng-model="formInfo.distance2genes" />
+                            </span>
+                        </td>
+                        <td ng-show="message" style="text-align:left">
+                            <span ng-show="finished && formInfo.map2genes">
+                            <em>Show transcript data:</em> <input type="checkbox" ng-model="formInfo.showTranscript" name="showtranscript"/></span>
+                        </td>
+                    </tr>            
                 </table>
-            </div>   
+            </div>
+            <div class="col-xs-4" style="text-align:right">
+                <span>Species: </span>
+                <select style="height:30px" ng-options="obj.label + ' ('+obj.assembly+')' for obj in speciesList | orderBy:'label' track by obj.species_id" ng-model="currentSpecies">                                   
+                </select>
+            </div>
+            
 
             
         </form>            
     </div>
     <div class="row" style="padding-left:20px; padding-right:20px; margin-right:20px;" ng-model="transposons" ng-show="transposons.length" ng-cloak id="transposons">
-        <table ng-show="finished" class="col-xs-8" style="margin-left:15px;margin-bottom:20px;">
+        <table ng-show="finished && formInfo.locateGenes" class="col-xs-8" style="margin-left:15px;margin-bottom:20px;">
             <tr><th>Coding transcripts</th>
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="utr5" style="padding:10px"> 5' UTR </td>
                 <td class="cds" style="padding:10px"> Coding sequence </td>
                 <td class="utr3" style="padding:10px"> 3' UTR </td>
                 <td class="flank3" style="padding:10px"> 3' Flank </td>
-                <td ng-show="finished" style="text-align:center">
-                    <em>Show transcript data:</em> <input type="checkbox" ng-model="formInfo.showTranscript" name="showtranscript"/>
-                </td>
+                
             </tr>
             <tr><th>Non-coding transcripts</th>
                 <td class="flank5" style="padding:10px"> 5' Flank </td>
                 <td class="nct" style="padding:10px;text-align:center;" colspan="3"> Non-coding transcript</td>
-                <td class="flank3" style="padding:10px"> 3' Flank </td>
-                <td style="text-align:center"><a ng-click="gi.scroll('distribution')" style="cursor:pointer">View feature dstribution</a></td>
+                <td class="flank3" style="padding:10px"> 3' Flank </td>                
             </tr>
             
         </table>
         
-        <table class="cols-xs-12 table table-condensed table-striped table-bordered" style="margin-left:15px;margin-right:25px;margin-top:20px;padding-right:10px;padding-top:20px">
+        <table ng-show="finished" class="cols-xs-12 table table-condensed table-striped table-bordered" style="margin-left:15px;margin-right:25px;margin-top:20px;padding-right:10px;padding-top:20px">
             <tr>
                 <th>Sample</th>
                 <th colspan="2"> Gene </th>
@@ -163,8 +185,8 @@
             </tr>
         </table>
     </div>
-    <a ng-show="finished" name="distribution" style="margin:20px; text-decoration:none"> Distributions of transposons across the genome </a>
-    <div id="karyotype" style="margin-left:20px;height:650px;width:1600px">
+    <a ng-show="finished" name="distribution" style="margin:20px; text-decoration:none"> Distribution of features across the genome </a>
+    <div ng-show="finished" id="karyotype" style="margin-left:20px;height:650px;width:1600px">
     </div>
     <a ng-show="finished" href="#top">Back to top</a>
         

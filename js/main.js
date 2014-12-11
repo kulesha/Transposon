@@ -1,7 +1,9 @@
+'use strict';
+
 function drawKaryotype(r, data) {
     r.clear();
-
-    var karyotype = {        
+    console.log("draw " + data.length);    
+    var x = 0, y = 5, karyotype = {
         1 : { label : "1", length : 249250621 },
         2 : { label : "2", length : 243199373 },
         3 : { label : "3", length : 198022430 },
@@ -28,18 +30,14 @@ function drawKaryotype(r, data) {
         24 : { label : "Y", length : 59373566},
         25 : { label : "MT", length : 16569}
     };
-
-    var x = 0;
-    var y = 5;
-    var maxX = karyotype["1"].length;
     
-    var chrH = 20;
-    var w = 1;
-    var xOffset = 30;
-    var gHeight = 630;
-    var binNum = 30;
-    var binSize = (maxX / binNum/ 1000000) ;
-    for (var k = 1; k <= binNum; k++) {
+    var maxX = karyotype["1"].length;
+
+    
+    
+    var k, chrH = 20, w = 1, xOffset = 30, gHeight = 630, binNum = 30;
+    var binSize = (maxX / binNum / 1000000) ;
+    for (k = 1; k <= binNum; k++) {
         var cap = Math.floor(k * binSize) + 'M';
         
         var t = r.text(xOffset + 50 * k, y,  cap);        
@@ -257,8 +255,6 @@ var myApp = angular.module('geneInfoApp', ['ngSanitize', 'ngCsv']);
 myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anchorScroll', '$window', function ($scope, $http, $sce, $location, $anchorScroll, $window) { 
      $scope.formInfo = {
         gene: "", //"ARSE\nBRCA2", 
-        //fname: "http://www.ebi.ac.uk/~ek/all_1043.csv",
-         fname: "data/test2.csv",
         width: 100, 
         coding: false, 
         restServer: 'http://grch37.rest.ensembl.org',
@@ -267,6 +263,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         division: 'ensembl',
         commonInsertions : false,
         commonWidth: 5000,
+        distance2genes : 5000, 
+        map2genes : false,
         transFilter: 0
         
     };
@@ -382,9 +380,83 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         return 0;                
     };
 
+    $scope.loadSpecies = function() {                                  
+        var surl = 'php/species.php';                                   
+                        
+        $http.get(surl).success(function(response){
+            $scope.speciesList = response.data;
+            $scope.currentSpecies = { species_id : "1" };
+        });
+        
+        
+    }
+    
+    $scope.loadSpecies();
+    
+    $scope.Process = function() {
+        $scope.message = " Parsing file ";
+        
+        var d = new Date();
+        $scope.startedAt = d.getTime();
+        
+        var fd = new FormData();        
+        fd.append('myfile', document.getElementById('myfile').files[0]);
+        fd.append('distance', $scope.formInfo.distance2genes);
+        fd.append('map2genes', $scope.formInfo.map2genes ? 1 : 0);
+        
+        var url = "/eventMapper/php/mapper.php";
+        $scope.finished = 0;
+        
+        $http.post(url, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(response){
+            $scope.message = "Found " + response.count + " entries";
+            //console.log(response);
+            $scope.transposons = response.data.map(function(item) {
+                var e = item;
+                
+                e.rpos = e.psup;
+                e.rneg = e.nsup;
+                e.g = e.gene;
+                e.o = (e.o == '-') ? -1 : 1;
+                    
+                e.min = e.s < e.e ? e.s : e.e;
+                e.max = e.s > e.e ? e.s : e.e;
+                e.posX = e.r + ',' + padDigits(e.min, 10);
+                return e;                 
+            }).filter(function(n) {return n !== undefined });
+            
+            if ($scope.formInfo.transFilter) {
+                
+                if ($scope.formInfo.transFilter == 1) {
+                    $scope.filterCloseFeatures($scope.formInfo.commonWidth);
+                } else {
+                    if ($scope.formInfo.transFilter == 2) {
+                        $scope.filterCommonInsertions($scope.formInfo.commonWidth);
+                    }
+                }
+            }
+            
+            $scope.message = "Drawing distribution of " +  $scope.transposons.length + " entries";
+            
+            drawKaryotype($scope.canvas, $scope.transposons);
+            $scope.finished = 1;
+            var d = new Date();
+            var tm = (d.getTime() - $scope.startedAt) / 1000;
+            $scope.message = "Found " + $scope.transposons.length + " features in " + tm +'s';
+            
+        })
+        .error(function(e){
+            console.log("error");
+            console.log(e);
+        });
+    };
+    
     $scope.Upload = function() {
-        var f = document.getElementById('file').files[0];
-        r = new FileReader();
+        var f = document.getElementById('myfile').files[0];
+        var r = new FileReader();
         r.onloadend = function(e){
             var data = e.target.result;
 //            console.log(data);
@@ -427,7 +499,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
             });
             
           //console.log($scope.transposons);
-            //console.log("Genes to find : " + Object.keys($scope.genes).length);
+            console.log("Genes to find : " + Object.keys($scope.genes).length);
             var d = new Date();
             $scope.startedAt = d.getTime();
             
@@ -436,6 +508,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
             $scope.gHash = {};
             $scope.finished = 0;
             self.fetch_genes(0);
+            //self.fetch_genes_new(0);
         };
    
         r.readAsText(f);
@@ -733,7 +806,19 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
 
     
     this.calcPositions = function() {
-  //      console.log($scope.gHash);
+        console.log($scope.gHash);
+        for (var i in $scope.gHash) {
+            var g = $scope.gHash[ i ];
+            console.log(g.display_name);
+            var tl = g.transcript;
+            var str = 'INSERT INTO exons VALUES ';
+            
+            for (var i in tl.Exon) {
+                str = str + ("('"+tl.id + "'," + tl.Exon[i].start + ',' + tl.Exon[i].end+")"); 
+            }
+            console.log(str);
+         
+        }
         for (var i in $scope.transposons ) {
                 var t = $scope.transposons[i];
                 
@@ -745,6 +830,7 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
                     if (g) {
                         // find canonical transcript
                         var tl = g.transcript;
+  
                         t.ori = tl.strand;         
                         t.gs = tl.start;
                         t.ge = tl.end;
@@ -773,6 +859,10 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
             }
             
     //        console.log($scope.transposons);
+    };
+    
+    this.fetch_genes_new = function () {
+        console.log($scope.toFind);
     };
     
     this.fetch_genes = function( i ) {
@@ -823,10 +913,9 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
         $scope.sortDescending = false;
     };
     
-    this.getGeneData = function(gene) {
+    this.getGeneData = function() {
         // first we look for the gene
-        var url = $scope.formInfo.restServer + '/lookup/symbol/'+self.species+'/' + gene
-                + '?content-type=application/json;expand=1';
+        var url = '/info/gene';
             
         $http.get(url).success(function(data){
         });
@@ -862,7 +951,8 @@ myApp.controller('geneInfoCtrl', ['$scope', '$http', '$sce', '$location', '$anch
             $scope.toFind.push('BRCA2'); // tmp fix 
             $scope.gHash = {};
             $scope.finished = 0;
-            self.fetch_genes(0);
+            //self.fetch_genes(0);
+            self.fetch_genes_new();
         });
         
         
