@@ -35,14 +35,16 @@ class DBAdaptor extends mysqli {
            mysqli_free_result($result);
   		}  
         
-        $sql2 = "SELECT * from exons WHERE transcript_id = '".$obj->transcript_id."'";
-        if ($result2 = $this->query($sql2, MYSQLI_USE_RESULT)) {
-            $obj->exons = array();
-    	   while($obj2 = $result2->fetch_object()){
-  	         array_push($obj->exons, $obj2);
-  	       } 
-  	       mysqli_free_result($result2);
-  		} 
+        if ($obj) {
+            $sql2 = "SELECT * from exons WHERE transcript_id = '".$obj->transcript_id."'";
+            if ($result2 = $this->query($sql2, MYSQLI_USE_RESULT)) {
+                $obj->exons = array();
+    	       while($obj2 = $result2->fetch_object()){
+  	                 array_push($obj->exons, $obj2);
+  	             } 
+  	             mysqli_free_result($result2);
+  		    }
+        }
 		return $obj;
     }
 }

@@ -213,7 +213,7 @@ class Mapper {
     public function mapToGenes() {
         foreach($this->data as &$e) {
             if ($e->gene) {
-                $gene = $this->dbh->fetchGeneByName($e->gene);
+                if ($gene = $this->dbh->fetchGeneByName($e->gene)) {
                # echo var_dump($gene);
                 $e->tid = $gene->transcript_id;    
                 $e->utr3s = $gene->start3utr;
@@ -236,6 +236,7 @@ class Mapper {
             
                 $e->posS = $this->getExonNumber($e->s, $gene);
                 $e->posE = $this->getExonNumber($e->e, $gene);
+                }
             }
 
             $e->turl = "g.transcript_url";
